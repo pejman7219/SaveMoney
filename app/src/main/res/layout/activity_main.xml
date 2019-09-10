@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".UI.MainActivity"
+    android:layoutDirection="rtl">
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabBackground="@drawable/tab_item_selector"
+        app:tabTextColor="@android:color/white"
+        app:tabIndicatorColor="@color/blue"
+        android:id="@+id/main_tabLayout">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="هزینه ها"
+            android:background="@drawable/tab_item_selector"
+            android:id="@+id/main_tabLayout_tabItemCost"/>
+        <com.google.android.material.tabs.TabItem
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="درآمد ها"
+            android:id="@+id/main_tabLayout_tabItemIncome"/>
+        <com.google.android.material.tabs.TabItem
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="گزارش ها"
+            android:id="@+id/main_tabLayout_tabItemReport"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:id="@+id/main_frameLayout_cost"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/main_frameLayout_income" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/main_frameLayout_report"/>
+
+
+</LinearLayout>
