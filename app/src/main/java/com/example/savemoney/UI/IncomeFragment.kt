@@ -21,6 +21,7 @@ class IncomeFragment : Fragment() {
 
 
     var list = ArrayList<ItemIncomeModel>()
+    var incomeAdapter : IncomeAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -41,7 +42,14 @@ class IncomeFragment : Fragment() {
         var recyclerView = view.findViewById(R.id.income_fragment_recyclerView) as RecyclerView
         recyclerView.layoutManager = GridLayoutManager(activity, 3)
         list=DbHelper().readItemIncomList()
-        recyclerView.adapter = IncomeAdapter(list)
+        incomeAdapter = IncomeAdapter(list)
+        recyclerView.adapter = incomeAdapter
+    }
+
+    public fun dataChange()
+    {
+        //Toast.makeText(context,"OK",Toast.LENGTH_LONG).show()
+        incomeAdapter!!.dataChange()
     }
 }
 

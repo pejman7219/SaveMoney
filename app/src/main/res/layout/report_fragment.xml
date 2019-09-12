@@ -3,13 +3,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.ReportFragment">
+    tools:context=".UI.ReportFragment"
+    android:layoutDirection="rtl">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:id="@+id/report_fragment_textView"/>
+        android:layout_height="match_parent">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/report_fragment_linearLayout_bottomBar"
+            android:id="@+id/report_fragment_recyclerView"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/report_fragment_linearLayout_bottomBar">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@android:color/black"
+                android:background="@android:color/holo_red_light"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="هزینه های ماه جاری"
+                android:id="@+id/report_fragment_textView_cost"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@android:color/black"
+                android:background="@android:color/holo_green_light"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="درآمد های ماه جاری"
+                android:id="@+id/report_fragment_textView_income"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
 </FrameLayout>

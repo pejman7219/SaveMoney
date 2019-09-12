@@ -1,8 +1,15 @@
 package com.example.savemoney.UI
 
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.poolamochikarkonm.RealmModel.ItemCostomModel
 import com.example.poolamochikarkonm.RealmModel.ItemIncomeModel
 import com.example.savemoney.R
@@ -10,6 +17,8 @@ import com.example.savemoney.RealmDb.DbHelper
 import com.example.savemoney.SharedPref.SharedPref
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.add_cost.*
+import kotlinx.android.synthetic.main.add_income.*
 import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +28,8 @@ class MainActivity : AppCompatActivity() {
     var reportFragment= ReportFragment()
     var fragmentManager=supportFragmentManager
     var fragmentTransaction=fragmentManager.beginTransaction()
-
+    var listPermission = ArrayList<String>()
+    var list= arrayOf("android.permission.READ_SMS","android.permission.RECEIVE_SMS")
 
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -27,7 +37,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var sharedPref=SharedPref.getInstance(applicationContext)
+
+
+        val sharedPref=SharedPref.getInstance(applicationContext)
         if(sharedPref.getData("user_status").equals(""))
         {
             initListItemCost()
@@ -36,6 +48,14 @@ class MainActivity : AppCompatActivity() {
             sharedPref.saveData("user_status","1")
         }
 
+
+        listPermission.add("android.permission.READ_SMS")
+        listPermission.add("android.permission.RECEIVE_SMS")
+
+        if(havePermision())
+        {
+            requestPermission()
+        }
 
         fragmentTransaction.add(R.id.main_frameLayout_cost,costFragment,"costFragment")
         fragmentTransaction.add(R.id.main_frameLayout_income,incomeFragment,"incomeFragment")
@@ -100,14 +120,30 @@ class MainActivity : AppCompatActivity() {
         main_frameLayout_cost.visibility=View.GONE
         main_frameLayout_income.visibility=View.GONE
         main_frameLayout_report.visibility=View.VISIBLE
+
+        reportFragment.SetData()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode==4545)
+        {
+            costFragment.dataChange()
+        }
+        else if (requestCode== 5555)
+        {
+            incomeFragment.dataChange()
+        }
+
     }
 
 
     fun initListItemCost()
     {
-        var listItemCost = ArrayList<ItemCostomModel>()
+        val listItemCost = ArrayList<ItemCostomModel>()
 
-        var itemCostModel = ItemCostomModel()
+        val itemCostModel = ItemCostomModel()
         var i=0
         itemCostModel.id=i
         itemCostModel.background = "#EF4C50"
@@ -117,7 +153,7 @@ class MainActivity : AppCompatActivity() {
         listItemCost.add(i,itemCostModel)
 
 
-        var itemCostModel1 = ItemCostomModel()
+        val itemCostModel1 = ItemCostomModel()
         itemCostModel1.id=i++
         itemCostModel1.background = "#45C45E"
         itemCostModel1.titel = "میوه و سبزی"
@@ -125,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel1.image = R.drawable.mivevasabzi
         listItemCost.add(i,itemCostModel1)
 
-        var itemCostModel2 = ItemCostomModel()
+        val itemCostModel2 = ItemCostomModel()
         itemCostModel2.id=i++
         itemCostModel2.background = "#F98D13"
         itemCostModel2.titel = "سوپری"
@@ -133,7 +169,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel2.image = R.drawable.supery
         listItemCost.add(i,itemCostModel2)
 
-        var itemCostModel3 = ItemCostomModel()
+        val itemCostModel3 = ItemCostomModel()
         itemCostModel3.id=i++
         itemCostModel3.background = "#09B389"
         itemCostModel3.titel = "مسکن"
@@ -141,7 +177,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel3.image = R.drawable.maskan
         listItemCost.add(i,itemCostModel3)
 
-        var itemCostModel4 = ItemCostomModel()
+        val itemCostModel4 = ItemCostomModel()
         itemCostModel4.id=i++
         itemCostModel4.background = "#F47CA3"
         itemCostModel4.titel = "آرایشی بهداشتی"
@@ -149,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel4.image = R.drawable.kerem
         listItemCost.add(i,itemCostModel4)
 
-        var itemCostModel5 = ItemCostomModel()
+        val itemCostModel5 = ItemCostomModel()
         itemCostModel5.id=i++
         itemCostModel5.background = "#953291"
         itemCostModel5.titel = "رفت و آمد"
@@ -157,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel5.image = R.drawable.rafto_amad
         listItemCost.add(i,itemCostModel5)
 
-        var itemCostModel6 = ItemCostomModel()
+        val itemCostModel6 = ItemCostomModel()
         itemCostModel6.id=i++
         itemCostModel6.background = "#F78B7A"
         itemCostModel6.titel = "پوشاک"
@@ -165,7 +201,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel6.image = R.drawable.poshak
         listItemCost.add(i,itemCostModel6)
 
-        var itemCostModel7 = ItemCostomModel()
+        val itemCostModel7 = ItemCostomModel()
         itemCostModel7.id=i++
         itemCostModel7.background = "#26ADA9"
         itemCostModel7.titel = "قبوض"
@@ -173,7 +209,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel7.image = R.drawable.ghobooz
         listItemCost.add(i,itemCostModel7)
 
-        var itemCostModel8 = ItemCostomModel()
+        val itemCostModel8 = ItemCostomModel()
         itemCostModel8.id=i++
         itemCostModel8.background = "#EC2F63"
         itemCostModel8.titel = "تحصیلات"
@@ -181,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel8.image =R.drawable.kalej
         listItemCost.add(i,itemCostModel8)
 
-        var itemCostModel9 = ItemCostomModel()
+        val itemCostModel9 = ItemCostomModel()
         itemCostModel9.id=i++
         itemCostModel9.background = "#7972C7"
         itemCostModel9.titel = "لوازم مصرفی"
@@ -189,7 +225,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel9.image = R.drawable.mahitabeh
         listItemCost.add(i,itemCostModel9)
 
-        var itemCostModel10 = ItemCostomModel()
+        val itemCostModel10 = ItemCostomModel()
         itemCostModel10.id=i++
         itemCostModel10.background = "#E12C92"
         itemCostModel10.titel = "خودرو"
@@ -197,7 +233,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel10.image = R.drawable.mashin
         listItemCost.add(i,itemCostModel10)
 
-        var itemCostModel11 = ItemCostomModel()
+        val itemCostModel11 = ItemCostomModel()
         itemCostModel11.id=i++
         itemCostModel11.background = "#FEBC3C"
         itemCostModel11.titel = "درمان"
@@ -205,7 +241,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel11.image =R.drawable.darman
         listItemCost.add(i,itemCostModel11)
 
-        var itemCostModel12 = ItemCostomModel()
+        val itemCostModel12 = ItemCostomModel()
         itemCostModel12.id=i++
         itemCostModel12.background = "#F7904F"
         itemCostModel12.titel = "سفر"
@@ -213,7 +249,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel12.image =R.drawable.havapeyma
         listItemCost.add(i,itemCostModel12)
 
-        var itemCostModel13 = ItemCostomModel()
+        val itemCostModel13 = ItemCostomModel()
         itemCostModel13.id=i++
         itemCostModel13.background = "#ADCE5D"
         itemCostModel13.titel = "رستوران"
@@ -221,7 +257,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel13.image = R.drawable.restoran
         listItemCost.add(i,itemCostModel13)
 
-        var itemCostModel14 = ItemCostomModel()
+        val itemCostModel14 = ItemCostomModel()
         itemCostModel14.id=i++
         itemCostModel14.background = "#8F3E9E"
         itemCostModel14.titel = "سرگرمی و ورزشی"
@@ -229,7 +265,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel14.image = R.drawable.shahrebazi
         listItemCost.add(i,itemCostModel14)
 
-        var itemCostModel15 = ItemCostomModel()
+        val itemCostModel15 = ItemCostomModel()
         itemCostModel15.id=i++
         itemCostModel15.background = "#3CA27A"
         itemCostModel15.titel = "هدایا"
@@ -237,7 +273,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel15.image = R.drawable.hadaya
         listItemCost.add(i,itemCostModel15)
 
-        var itemCostModel16 = ItemCostomModel()
+        val itemCostModel16 = ItemCostomModel()
         itemCostModel16.id=i++
         itemCostModel16.background = "#EA4640"
         itemCostModel16.titel = "پول تو جیبی"
@@ -245,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel16.image = R.drawable.kifpol
         listItemCost.add(i,itemCostModel16)
 
-        var itemCostModel17 = ItemCostomModel()
+        val itemCostModel17 = ItemCostomModel()
         itemCostModel17.id=i++
         itemCostModel17.background = "#63C6B4"
         itemCostModel17.titel = "اینترنت"
@@ -253,7 +289,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel17.image = R.drawable.ic_global
         listItemCost.add(i,itemCostModel17)
 
-        var itemCostModel18 = ItemCostomModel()
+        val itemCostModel18 = ItemCostomModel()
         itemCostModel18.id=i++
         itemCostModel18.background = "#A0886F"
         itemCostModel18.titel = "تعمیر لوازم"
@@ -261,7 +297,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel18.image = R.drawable.taamir_lavazem
         listItemCost.add(i,itemCostModel18)
 
-        var itemCostModel19 = ItemCostomModel()
+        val itemCostModel19 = ItemCostomModel()
         itemCostModel19.id=i++
         itemCostModel19.background = "#716BAF"
         itemCostModel19.titel = "خریداموال"
@@ -269,15 +305,15 @@ class MainActivity : AppCompatActivity() {
         itemCostModel19.image = R.drawable.froosh_amval
         listItemCost.add(i,itemCostModel19)
 
-        var itemCostModel20 = ItemCostomModel()
+        val itemCostModel20 = ItemCostomModel()
         itemCostModel20.id=i++
         itemCostModel20.background = "#D56646"
         itemCostModel20.titel = "اقساط پرداختی"
         itemCostModel20.description = "پرداخت اقساط وام یا خریدهای اقساطی"
-        itemCostModel20.image = R.drawable.ic_credit_cards_payment
+        itemCostModel20.image = R.drawable.kart_banki
         listItemCost.add(i,itemCostModel20)
 
-        var itemCostModel21 = ItemCostomModel()
+        val itemCostModel21 = ItemCostomModel()
         itemCostModel21.id=i++
         itemCostModel21.background = "#66A2AF"
         itemCostModel21.titel = "بانکی"
@@ -285,7 +321,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel21.image = R.drawable.banki
         listItemCost.add(i,itemCostModel21)
 
-        var itemCostModel22 = ItemCostomModel()
+        val itemCostModel22 = ItemCostomModel()
         itemCostModel22.id=i++
         itemCostModel22.background = "#3B8C4C"
         itemCostModel22.titel = "خیریه"
@@ -293,7 +329,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel22.image = R.drawable.khyriye
         listItemCost.add(i,itemCostModel22)
 
-        var itemCostModel23 = ItemCostomModel()
+        val itemCostModel23 = ItemCostomModel()
         itemCostModel23.id=i++
         itemCostModel23.background = "#0185B2"
         itemCostModel23.titel = "دست مزد"
@@ -301,7 +337,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel23.image = R.drawable.dastmozd
         listItemCost.add(i,itemCostModel23)
 
-        var itemCostModel24 = ItemCostomModel()
+        val itemCostModel24 = ItemCostomModel()
         itemCostModel24.id=i++
         itemCostModel24.background = "#774189"
         itemCostModel24.titel = "سایرهزینه ها"
@@ -309,7 +345,7 @@ class MainActivity : AppCompatActivity() {
         itemCostModel24.image = R.drawable.sayer_hazine
         listItemCost.add(i,itemCostModel24)
 
-        var itemCostModel25 = ItemCostomModel()
+        val itemCostModel25 = ItemCostomModel()
         itemCostModel25.id=i++
         itemCostModel25.background = "#CF3063"
         itemCostModel25.titel = "پس انداز"
@@ -317,13 +353,12 @@ class MainActivity : AppCompatActivity() {
         itemCostModel25.image = R.drawable.pas_andaz
         listItemCost.add(i,itemCostModel25)
 
-        var itemCostModel26 = ItemCostomModel()
+        val itemCostModel26 = ItemCostomModel()
         itemCostModel26.id=i++
         itemCostModel26.background = "#B67F5C"
         itemCostModel26.titel = "پذیرایی"
         itemCostModel26.description = ""
         itemCostModel26.image = R.drawable.paziraee
-        R.drawable.parastar.toByte()
         listItemCost.add(i,itemCostModel26)
 
         for (itemCost in listItemCost)
@@ -342,88 +377,80 @@ class MainActivity : AppCompatActivity() {
     fun initListItemIncome()
     {
 
-        var listItemincome = ArrayList<ItemIncomeModel>()
+        val listItemincome = ArrayList<ItemIncomeModel>()
 
 
-        var i:Int=0
-        var itemincomeModel = ItemIncomeModel()
-        itemincomeModel.id=i++
+        val itemincomeModel = ItemIncomeModel()
         itemincomeModel.background = "#F99282"
         itemincomeModel.titel = "برداشت"
         itemincomeModel.description = "برداشت از صندوق محل کار,دریافت مساعده و ..."
         itemincomeModel.image = R.drawable.ic_bardasht
         listItemincome.add(itemincomeModel)
 
-        var itemincomeModel2 = ItemIncomeModel()
-        itemincomeModel2.id=i++
+        val itemincomeModel2 = ItemIncomeModel()
         itemincomeModel2.background = "#2CB4B0"
         itemincomeModel2.description = ""
         itemincomeModel2.titel = "دست مزد"
         itemincomeModel2.image = R.drawable.dastmozd1
         listItemincome.add(itemincomeModel2)
 
-        var itemincomeModel3 = ItemIncomeModel()
-        itemincomeModel3.id=i++
+        val itemincomeModel3 = ItemIncomeModel()
         itemincomeModel3.description = "حقوق ماهیانه"
         itemincomeModel3.background = "#EA3D6D"
-        itemincomeModel3.titel = "حقوق"
+        itemincomeModel3.titel =  "حقوق"
         itemincomeModel3.image = R.drawable.hoghoogh
         listItemincome.add(itemincomeModel3)
 
-        var itemincomeModel4 = ItemIncomeModel()
-        itemincomeModel4.id=i++
+        val itemincomeModel4 = ItemIncomeModel()
         itemincomeModel4.background = "#827AD5"
         itemincomeModel4.description = ""
         itemincomeModel4.titel = "اجاره مستغلات"
         itemincomeModel4.image = R.drawable.ejare_mostaghellat
         listItemincome.add(itemincomeModel4)
 
-        var itemincomeModel5 = ItemIncomeModel()
-        itemincomeModel5.id=i++
+        val itemincomeModel5 = ItemIncomeModel()
         itemincomeModel5.background = "#E12C92"
         itemincomeModel5.titel = "سودبانکی"
         itemincomeModel5.description = ""
         itemincomeModel5.image = R.drawable.soodbanki
         listItemincome.add(itemincomeModel5)
 
-        var itemincomeModel6 = ItemIncomeModel()
-        itemincomeModel6.id=i++
+        val itemincomeModel6 = ItemIncomeModel()
         itemincomeModel6.background = "#FEB62C"
         itemincomeModel6.description  = ""
         itemincomeModel6.titel = "یارانه"
         itemincomeModel6.image = R.drawable.yaraneh
         listItemincome.add(itemincomeModel6)
 
-        var itemincomeModel7 = ItemIncomeModel()
-        itemincomeModel7.id=i++
+        val itemincomeModel7 = ItemIncomeModel()
         itemincomeModel7.background = "#64C7B5"
         itemincomeModel7.description = ""
         itemincomeModel7.titel = "وام"
         itemincomeModel7.image = R.drawable.vam
         listItemincome.add(itemincomeModel7)
 
-        var itemincomeModel8 = ItemIncomeModel()
-        itemincomeModel8.id=i++
+        val itemincomeModel8 = ItemIncomeModel()
+
         itemincomeModel8.background = "#ADCE5D"
         itemincomeModel8.description = "درآمد حاصل از فروش خودرو,منزل,زمین,لوازم منزل و ..."
         itemincomeModel8.titel = "فروش اموال"
         itemincomeModel8.image = R.drawable.froosh_amval
         listItemincome.add(itemincomeModel8)
 
-        var itemincomeModel9 = ItemIncomeModel()
-        itemincomeModel9.id=i++
+        val itemincomeModel9 = ItemIncomeModel()
+
         itemincomeModel9.background = "#9D4FAC"
         itemincomeModel9.titel = "هدایا"
         itemincomeModel9.description="درآمدحاصل از هدایای دریافتی,پاداش و ..."
         itemincomeModel9.image = R.drawable.hadaya
         listItemincome.add(itemincomeModel9)
 
-        var itemincomeModel10 = ItemIncomeModel()
-        itemincomeModel10.id=i++
+        val itemincomeModel10 = ItemIncomeModel()
+
         itemincomeModel10.background = "#F67F34"
         itemincomeModel10.titel = "سایردرآمدها"
         itemincomeModel10.description=""
-        itemincomeModel10.image = R.drawable.ic_money_bags
+        itemincomeModel10.image = R.drawable.kise_pol
         listItemincome.add(itemincomeModel10)
 
 
@@ -438,5 +465,43 @@ class MainActivity : AppCompatActivity() {
         itemCostModel.titel = "جدید"
         itemCostModel.image = R.drawable.add_category
         listItemCost.add(itemCostModel)*/
+    }
+
+    fun havePermision():Boolean
+    {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+        {
+            var res:Boolean=true
+
+            for (permission in listPermission)
+            {
+                if(ContextCompat.checkSelfPermission(this,permission)==PackageManager.PERMISSION_GRANTED)
+                {
+                    res=res and true
+                }
+                else
+                {
+                    res=res and false
+                }
+            }
+
+            if (res)
+            {
+                return false
+            }
+            else
+            {
+                return true
+            }
+        }
+        else
+        {
+            return false
+        }
+    }
+
+    fun requestPermission()
+    {
+        ActivityCompat.requestPermissions(this,list,101)
     }
 }

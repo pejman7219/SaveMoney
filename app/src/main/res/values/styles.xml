@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/pop_in</item>
+    </style>
+
+    <style name="PauseDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>
+    </style>
+
 </resources>

@@ -15,7 +15,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.poolamochikarkonm.RealmModel.ItemIncomeModel
 import com.example.savemoney.R
+import com.example.savemoney.RealmDb.DbHelper
 import com.example.savemoney.UI.AddIncome
+import com.example.savemoney.UI.AddSubCategory
 
 class IncomeAdapter (var list:ArrayList<ItemIncomeModel>): RecyclerView.Adapter<IncomeAdapter.IncomeViewHolder>()
 {
@@ -30,7 +32,14 @@ class IncomeAdapter (var list:ArrayList<ItemIncomeModel>): RecyclerView.Adapter<
 
     override fun getItemCount(): Int
     {
-        return list.size
+        return list.size+1
+    }
+
+    public fun dataChange()
+    {
+        list.clear()
+        list=DbHelper().readItemIncomList()
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: IncomeViewHolder, position: Int)
@@ -45,6 +54,10 @@ class IncomeAdapter (var list:ArrayList<ItemIncomeModel>): RecyclerView.Adapter<
         if(position==list.size)
         {
             holder.itemView.setOnClickListener {
+
+                var gotoAddSubCategory = Intent(context, AddSubCategory::class.java)
+                gotoAddSubCategory.putExtra("flag","income")
+                (context as Activity).startActivityForResult(gotoAddSubCategory,5555)
 
 
             }

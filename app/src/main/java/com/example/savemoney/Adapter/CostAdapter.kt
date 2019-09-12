@@ -15,7 +15,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.poolamochikarkonm.RealmModel.ItemCostomModel
 import com.example.savemoney.R
+import com.example.savemoney.RealmDb.DbHelper
 import com.example.savemoney.UI.AddCost
+import com.example.savemoney.UI.AddSubCategory
 
 
 class CostAdapter(var list:ArrayList<ItemCostomModel>): RecyclerView.Adapter<CostAdapter.CostsViewHolder>()
@@ -23,6 +25,7 @@ class CostAdapter(var list:ArrayList<ItemCostomModel>): RecyclerView.Adapter<Cos
 
 
     lateinit var context: Context
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CostsViewHolder
     {
         var view= LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_ci_layout,parent,false)
@@ -34,6 +37,13 @@ class CostAdapter(var list:ArrayList<ItemCostomModel>): RecyclerView.Adapter<Cos
     override fun getItemCount(): Int
     {
         return list.size+1
+    }
+
+    fun dataChange()
+    {
+        list.clear()
+        list= DbHelper().readItemCostList()
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: CostsViewHolder, position: Int)
@@ -49,12 +59,15 @@ class CostAdapter(var list:ArrayList<ItemCostomModel>): RecyclerView.Adapter<Cos
         {
             holder.itemView.setOnClickListener {
 
+                var gotoAddSubCategory = Intent(context, AddSubCategory::class.java)
+                gotoAddSubCategory.putExtra("flag","cost")
+                (context as Activity).startActivityForResult(gotoAddSubCategory,4545)
 
             }
 
             holder.cardView.setCardBackgroundColor(Color.parseColor("#A649AD"))
             holder.image.setImageResource(R.drawable.add_category)
-            holder.name.setText("جدید")
+            holder.name.text="جدید"
         }
         else
         {
@@ -73,6 +86,9 @@ class CostAdapter(var list:ArrayList<ItemCostomModel>): RecyclerView.Adapter<Cos
         }
 
     }
+
+
+
     class CostsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         var cardView=itemView.findViewById<CardView>(R.id.recyclerview_ci_layout_cardView)
